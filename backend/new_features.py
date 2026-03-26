@@ -1,7 +1,7 @@
 import numpy.financial as npf
 
 def is_false_positive(term,remaining_terms,rate,current_rate):
-    return term>1.5*remaining_terms or rate>current_rate and term>1.5*remaining_terms
+    return (term>1.5*remaining_terms) or (rate>current_rate and term>1.5*remaining_terms)
 
 def get_lifetime_interest_savings(current_monthly_payment,remaining_terms,current_loan_balance,new_monthly_payment, new_term, new_loan_balance):
     return (current_monthly_payment*remaining_terms-current_loan_balance)-(new_monthly_payment*new_term-new_loan_balance)
