@@ -1,0 +1,55 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.main-header {
+  /* The specific color from your first image */
+  background-color: rgb(62, 114, 21); 
+  width: 100vw;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 72px;
+  z-index: 101;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 0rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.logo-wrapper svg {
+  position: absolute;
+  left: 1rem;
+  height: 30px;
+  width: auto;
+}
+.logo-wrapper h1 {
+  color: white;
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.regions-logo {
+  height: 40px; /* Adjust size as needed */
+  width: auto;
+}
+.avatar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
+  color: white;
+}
