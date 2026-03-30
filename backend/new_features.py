@@ -1,7 +1,7 @@
-import numpy.financial as npf
+import numpy_financial as npf
 
 def is_false_positive(term,remaining_terms,rate,current_rate):
-    return (term>1.5*remaining_terms) or (rate>current_rate and term>1.5*remaining_terms)
+    return (term>1.5*remaining_terms) or (rate>current_rate and term>remaining_terms)
 
 def get_lifetime_interest_savings(current_monthly_payment,remaining_terms,current_loan_balance,new_monthly_payment, new_term, new_loan_balance):
     return (current_monthly_payment*remaining_terms-current_loan_balance)-(new_monthly_payment*new_term-new_loan_balance)
@@ -23,3 +23,10 @@ def calculate_apr(MSPdata,viable_refinance_options, annual_interest_rate, loan_a
 
 def calculate_mortgage_insurance_fee():
     pass
+initial_loan_balance=396204.89
+
+cashflows=[initial_loan_balance]+[-2564.87]*(11*12)+[-2398.20]*((30-11)*12)
+irr=npf.irr(cashflows)
+print(f"APR = {round(((1+irr)**12-1)*100, 3)}%")
+print(f"IRR = {round(irr*100, 4)}%")
+print(npf.rate(30*12, -2564.87, initial_loan_balance,0)*12*100)
