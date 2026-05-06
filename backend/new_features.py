@@ -134,3 +134,68 @@ results = calculate_arm_apr_optimized(
 print(f"Monthly IRR: {results['Monthly IRR']*100:.3f}%")
 print(f"Effective APR (Matches Sheet): {results['Effective APR'] * 100:.3f}%")
 print(f"MI Drops at Month: {results['MI Cutoff Month']}")
+
+from scipy.optimize import newton
+
+def calculate_two_tier_irr(initial_loan_balance, pmt1, n1, pmt2, n2, guess=0.005):
+    """
+    Calculates the IRR and APR for a loan with two different payment periods.
+    
+    Args:
+        initial_loan_balance (float): The principal loan amount.
+        pmt1 (float): The monthly payment amount for the first period.
+        n1 (int): The number of months the first payment is made.
+        pmt2 (float): The monthly payment amount for the second period.
+        n2 (int): The number of months the second payment is made.
+        guess (float): Initial guess for the solver (default is 0.5%).
+        
+    Returns:
+        dict: A dictionary containing the calculated APR and IRR.
+    """
+    
+    def npv(r):
+        # If the solver accidentally guesses 0, avoid division by zero
+        if r == 0:
+            return (pmt1 * n1) + (pmt2 * n2) - initial_loan_balance
+            
+        # 1. Present value of the first block of payments
+        pv1 = pmt1 * (1 - (1 + r)**(-n1)) / r
+        
+        # 2. Present value of the second block of payments
+        #    Evaluated at the end of period 1, so discounted back by n1 months
+        pv2 = (pmt2 * (1 - (1 + r)**(-n2)) / r) * (1 + r)**(-n1)
+        
+        # The sum of present values minus the loan balance should equal 0 at the IRR
+        return pv1 + pv2 - initial_loan_balance
+
+    # Solve for the root (IRR)
+    irr = newton(npv, guess)
+    
+    # Calculate returns
+    apr = ((1 + irr)**12 - 1) * 100
+    monthly_irr = irr * 100
+    
+    return {
+        "APR": round(apr, 3),
+        "IRR": round(monthly_irr, 4)
+    }
+
+# ==========================================
+# Example Usage
+# ==========================================
+balance = 300000
+payment_1 = 2564.87
+months_1 = 132
+payment_2 = 2398.20
+months_2 = 228
+
+results = calculate_two_tier_irr(
+    initial_loan_balance=balance, 
+    pmt1=payment_1, 
+    n1=months_1, 
+    pmt2=payment_2, 
+    n2=months_2
+)
+
+print(f"APR = {results['APR']}%")
+print(f"IRR = {results['IRR']}%")
